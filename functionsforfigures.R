@@ -28,14 +28,14 @@ ncpsurfaceplotfigure <- function(){
   
 }
 
-haploidncpcalculation <- function(d, a, samp.size, df, b, h, allele, x){
+#calculates ncp in haploid case
+haploidncpcalculation <- function(d, a, samp.size, df, b, allele, x){
   inflationfactor <- seq(0, x, length.out = 1000)
   
   ncpdata <- vector()
   
   for (t in inflationfactor){
     
-    #calculate non-centrality parameter
     if (allele == 'risk'){
       ncp <- ((b-d)^2*a*t*(d*t-1))/(d*(1+b*(t-1)-d*t)*(-1+d+a+a*b*(t-1)-d*a*t))
       
@@ -49,6 +49,7 @@ haploidncpcalculation <- function(d, a, samp.size, df, b, h, allele, x){
   plot(inflationfactor*(1/x), ncpdata, xlab = "Case Fraction", ylab = expression(lambda), type = "l", las = 1, bty = "n", pch =19, xlim = c(0, 1))
 }
 
+#calculates ncp in diploid case
 diploidncpcalculation <- function(d, a, b, h, samp.size, analysis, x, df = 2){
   inflationfactor <- seq(0.001, x, length.out = 1000)
   
@@ -56,7 +57,6 @@ diploidncpcalculation <- function(d, a, b, h, samp.size, analysis, x, df = 2){
   
   for (t in inflationfactor){
     
-    #calculate non-centrality parameter
     if (analysis == 'dominant'){
       ncp <- (t*(a-1)*(a*(-2*h*(a-1)+a)^2)*((b-d)^2)*(t*d-1))/(d*(d-1+(2*h*(a-1)-a)*a*(b-1-b*t+t*d))*(-2-b*(t-1)*(2*h*(a-1)-a)*(a-1)-a+2*d+a*(a+t*d-t*a*d)+2*h*((t-1)*d+(a-2)*a*(-1+t*d))))
       
@@ -75,58 +75,58 @@ diploidncpcalculation <- function(d, a, b, h, samp.size, analysis, x, df = 2){
   
 } 
 
-penetrancefigure <- function(d, a){
+#figure showing haploid and diploid cases at different penetrance levels (0.2, 0.5, 1)
+penetrancefigure <- function(d, a, penetrance_levels){
   allele <- 'risk'
   par(mfrow = c(2,3), mgp = c(3.5, 1, 0), mar = c(5.1, 6, 2.1, 2.1), xpd=NA)
-  haploidncpcalculation(d, a, 10000, 1, 0.2, 1, allele, x = (1/d))
+  haploidncpcalculation(d, a, 10000, 1, penetrance_levels[1], 1, allele, x = (1/d))
   legend("topleft", legend = "a)", inset= c(-0.7, -.2225), bty = "n")
   par(mar = c(5.1, 4.1, 2.1, 2.1))
-  haploidncpcalculation(d, a, 10000, 1, 0.5, 1, "risk", 1/d)
+  haploidncpcalculation(d, a, 10000, 1, penetrance_levels[2], 1, "risk", 1/d)
   legend("topleft", legend = "b)", inset= c(-0.6, -.2), bty = "n")
-  haploidncpcalculation(d, a, 10000, 1, 1, 1, "risk", 1/d)
+  haploidncpcalculation(d, a, 10000, 1, penetrance_levels[3], 1, "risk", 1/d)
   legend("topleft", legend = "c)", inset= c(-0.6, -.2), bty = "n")
   allele <- 'unknown'
   par(mar = c(5.1, 6, 2.1, 2.1))
-  diploidcalculation(d, a, 0.2, 0.5, 10000, allele, 1/d)
+  diploidncpcalculation(d, a, penetrance_levels[1], 0.5, 10000, allele, 1/d)
   legend("topleft", legend = "d)", inset= c(-0.7, -.2225), bty = "n")
   par(mar = c(5.1, 4.1, 2.1, 2.1))
-  diploidcalculation(d, a, 0.5, 0.5, 10000, allele, 1/d)
+  diploidncpcalculation(d, a, penetrance_levels[2], 0.5, 10000, allele, 1/d)
   legend("topleft", legend = "e)", inset= c(-0.6, -.2225), bty = "n")
-  diploidcalculation(d, a, 1, 0.5, 10000, allele, 1/d)
+  diploidncpcalculation(d, a, 1, penetrance_levels[3], 10000, allele, 1/d)
   legend("topleft", legend = "f)", inset= c(-0.6, -.2225), bty = "n")
 }
 
-dominancefigure <- function(d, a){
+dominancefigure <- function(d, a, dominancelevels){
   allele <- "unknown"
   par(mfrow = c(2,3), mgp = c(3, 1, 0), mar = c(5.1, 6, 2.1, 2.1), xpd=NA, las = 2)
-  diploidncpcalculation(d, a, 1, 0, 10000, allele, 1/d)
+  diploidncpcalculation(d, a, 1, dominancelevels[1], 10000, allele, 1/d)
   legend("topleft", legend = "a)", inset= c(-0.7, -.2), bty = "n")
-  diploidncpcalculation(d, a, 1, 0.5, 10000, allele, 1/d)
+  diploidncpcalculation(d, a, 1, dominancelevels[2], 10000, allele, 1/d)
   legend("topleft", legend = "b)", inset= c(-0.7, -.2), bty = "n")
-  diploidncpcalculation(d, a, 1, 1, 10000, allele, 1/d)
+  diploidncpcalculation(d, a, 1, dominancelevels[3], 10000, allele, 1/d)
   legend("topleft", legend = "c)", inset= c(-0.7, -.2), bty = "n")
-  diploidncpcalculation(d, a, 0.5, 0, 10000, allele, 1/d)
+  diploidncpcalculation(d, a, 0.5, dominancelevels[1], 10000, allele, 1/d)
   legend("topleft", legend = "d)", inset= c(-0.7, -.2), bty = "n")
-  diploidncpcalculation(d, a, 0.5, 0.5, 10000, allele, 1/d)
+  diploidncpcalculation(d, a, 0.5, dominancelevels[2], 10000, allele, 1/d)
   legend("topleft", legend = "e)", inset= c(-0.7, -.2), bty = "n")
-  diploidncpcalculation(d, a, 0.5, 1, 10000, allele, 1/d)
+  diploidncpcalculation(d, a, 0.5, dominancelevels[3], 10000, allele, 1/d)
   legend("topleft", legend = "f)", inset= c(-0.7, -.2), bty = "n")
 }
 
-riskvsprotectivefigure <- function(d, a){
+riskvsprotectivefigure <- function(d, a, penetrance){
   allele <- 'risk'
   par(mfrow = c(1, 2), mgp = c(3, 1, 0), mar = c(5.1, 4.1, 2.1, 2.1))
-  haploidncpcalculation(d, a, 10000, 1, 1, 1, allele, 1/d)
+  haploidncpcalculation(d, a, 10000, 1, penetrance, allele, 1/d)
   legend("topleft", legend = "a)", inset= c(-0.38, -.1), bty = "n")
   allele <- 'protective'
-  haploidncpcalculation(d, a, 10000, 1, 1, 1, "protective", 1/d)
+  haploidncpcalculation(d, a, 10000, 1, penetrance, allele, 1/d)
   legend("topleft", legend = "b)", inset= c(-0.38, -.1), bty = "n")
 }
 
 creatediploidpopulation <- function(d, a, b, h, analysis, pop.size = 1000000){
-  #creates vector of genotypes
+
   pop.genotypes <- rbinom(pop.size, 2, a)
-  #creates empty vector for phenotypes
   pop.phenotypes <- numeric(length(pop.genotypes))
   
   if (analysis == 'dominant'){
@@ -155,7 +155,6 @@ creatediploidpopulation <- function(d, a, b, h, analysis, pop.size = 1000000){
                                                  ((-2*b*h*a-b*a^2+2*b*h*a^2+d)/((-1+a)*(-1-a+2*h*a))))  
   }
   
-  #creates and returns a data frame with the population genotypes and phenotypes
   pop <- data.frame(pop.genotypes, pop.phenotypes)
   return(pop)
 }
@@ -168,7 +167,6 @@ powercalculation <- function(d, a, samp.size, analysis, alpha, df, b, h, x){
   
   for (t in inflation){
     
-    #calculate non-centrality parameter
     if (analysis == 'dominant'){
       ncp.base <- (t*(a-1)*(a*(-2*h*(a-1)+a)^2)*((b-d)^2)*(t*d-1))/
         (d*(d-1+(2*h*(a-1)-a)*a*(b-1-b*t+t*d))*(-2-b*(t-1)*(2*h*(a-1)-a)*
@@ -183,15 +181,13 @@ powercalculation <- function(d, a, samp.size, analysis, alpha, df, b, h, x){
                                               (1+b*(-1+t)-t*d)+a*(-1+d+(a^2)*(1+b*(-1+t)-t*d))+h*a*(-b*(-1+t)*((1-2*a)^2)+
                                                                                                       (-1+t)*d+4*(-1+a)*a*(-1+t*d))))/((d*(-1+b-b*t+t*d)*(-1-2*h*(-1+a)*a+(a^2)-b*(-1+t)*
                                                                                                                                                             (h+2*h*(-1+a)*a-(a^2))+d-t*(a^2)*d+h*(-1+t+2*t*(-1+a)*a)*d)*(-1+d+(2*h*(-1+a)-a)*a*(-1+b-b*t+t*d))))
-      
     }
     
     ncp <- ncp.base * samp.size
     
-    #calculate critical value of chi-squared
     criticalvalue <- qchisq(1-alpha, df)
     
-    #calculate power
+
     power <- pchisq(criticalvalue, df, ncp, lower.tail=FALSE, log.p = FALSE)
     data[match(t, inflation)] <- power
   }
