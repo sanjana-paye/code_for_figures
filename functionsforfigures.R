@@ -1,32 +1,87 @@
-ncpsurfaceplotfigure <- function(){
+figure1 <- function(d, a, b, t){
+  par(mfrow = c(2, 2), mgp = c(1, 3, 10), mar = c(2, 2, 2, 2), cex.axis = 0.5, las = 1)
+  ncpsurfaceplotfigure_risk(b, t)
+  ncpsurfaceplotfigure_protective(b, t)
+  
+  
+  # par(mfrow = c(1, 2), mgp = c(3, 1, 0), mar = c(5.1, 4.1, 2.1, 2.1))
+  allele <- 'risk'
+  
+  par(mgp = c(2, 1, 0), mar = c(4, 4.5, 1, 2))
+  riskvsprotectivefigure(d, a, b)
+}
+
+ncpsurfaceplotfigure_risk <- function(b, t){
   #surface plot figure
-  par(mfrow = c(1, 2), mgp = c(10, 3, 10), mar = c(5.1, 4.1, 4.1, 2.1), cex.axis = 0.5)
-  # x: disease frequency values at fixed intervals
-  # y: risk allele frequency values at fixed intervals
-  # z: function that defines the surface (in this case Fig7b)
+ 
+  # d: disease frequency values at fixed intervals
+  # a: risk allele frequency values at fixed intervals
+  # z: function that defines the surface
   d = seq(0, 0.99, by = 0.03)
   a = seq(0, 0.99, by = 0.03)
-  t = 1
-  b = 1
+  #t = 1
+  #b = 0.5
   z <- outer(d,a, function(d,a) (((b-d)^2)*a*t*(d*t-1))/(d*(1+b*(t-1)-d*t)*(-1+d+a+a*b*(t-1)-d*a*t)))
-  z_new <- pmin(z, .99)
+
+  z_new <- pmin(z, 1)
   
-  p <- persp(d,a,z_new, theta=30, phi=15, col="darkgoldenrod1", expand = 0.5, shade = 0.1, ticktype = "detailed",
-             xlab="disease frequency", ylab="risk allele frequency", zlab="", cex.lab = "0.75", zlim = c(0,1))
+  p <- persp(d,a,z_new, theta=20, phi=15, col="darkgoldenrod1",border = 'white', lwd = 0.2, expand = 0.5, ticktype = "detailed",
+             xlab=" Disease frequency", ylab=" Risk allele frequency", zlab="", cex.axis = 0.35, cex.lab = "0.5", xlim = c(0.025, .97), zlim = c(0,1))
+  
+  points_x <- c(0.1, 0.5)  # Example x-coordinates of points
+  points_y <- c(0.01, 0.05)  # Example y-coordinates of points
+  points_z <- c(0.091, 0.052)  # Example z-coordinates of points
+  
+  points_trans <- trans3d(points_x, points_y, points_z, pmat = p)  # Transform points to plot coordinates
+  
+  points(points_trans$x, points_trans$y, col = "red", pch = 16)  # Plot points on the 3D plot
+  
+  line_x <- c(0.1, 0.5)  # Example x-coordinates of line endpoints
+  line_y <- c(0.01, 0.05)  # Example y-coordinates of line endpoints
+  line_z <- c(0.091, 0.052)  # Example z-coordinates of line endpoints
+  
+  line_trans <- trans3d(line_x, line_y, line_z, pmat = p)  # Transform line endpoints to plot coordinates
+  
+  lines(line_trans$x, line_trans$y, col = "blue", lwd = 2)  # Draw the line on the plot
+  
+  
   legend("topleft", legend = "a)", inset= c(-0.2, -.01), bty = "n")
-  
+  mtext(expression(lambda), side = 2, line = 0.6, at = -0.05, las = 2, cex = 0.5)
+
+} 
+
+ncpsurfaceplotfigure_protective <- function(b, t){
   d = seq(0, 0.99, by = 0.03)
   a = seq(0, 0.99, by = 0.03)
-  t = 1
-  b = 1
+  #t = 1
+  #b = 0.5
   z <- outer(d,a, function(d,a) ((a*t*(-1+b+d)^2*(-1+t*d))/((b*(-1+t)+t*(-1+d))*(1+a*b*(-1+t)+a*t*(-1+d)-d)*d)))
   z_new <- pmin(z, 1)
   # Plots the surface
-  p <- persp(d,a,z_new, theta=-30, phi=15, col="darkgoldenrod1", expand = 0.5, shade = 0.1, ticktype = "detailed",
-             xlab="disease frequency", ylab="protective allele frequency", zlab= "", cex.lab = "0.75", zlim = c(0,1))
-  legend("topleft", legend = "b)", inset= c(-0.2, -.01), bty = "n")
+  p <- persp(d,a,z_new, theta=-20, phi=15, col="darkgoldenrod1", border = 'white', lwd = 0.2, expand = 0.5, ticktype = "detailed",
+             xlab="Disease frequency", ylab="Protective allele frequency", zlab= "", cex.axis = 0.35, cex.lab = "0.5", xlim = c(0.025, .97), zlim = c(0,1))
+ 
+  points_x <- c(0.1, 0.5)  # Example x-coordinates of points
+  points_y <- c(0.01, 0.05)  # Example y-coordinates of points
+  points_z <- c(0.001, 0.052)  # Example z-coordinates of points
   
+  points_trans <- trans3d(points_x, points_y, points_z, pmat = p)  # Transform points to plot coordinates
+  
+  points(points_trans$x, points_trans$y, col = "red", pch = 16)  # Plot points on the 3D plot
+  
+  line_x <- c(0.1, 0.5)  # Example x-coordinates of line endpoints
+  line_y <- c(0.01, 0.05)  # Example y-coordinates of line endpoints
+  line_z <- c(0.001, 0.053)  # Example z-coordinates of line endpoints
+  
+  line_trans <- trans3d(line_x, line_y, line_z, pmat = p)  # Transform line endpoints to plot coordinates
+  
+  lines(line_trans$x, line_trans$y, col = "blue", lwd = 2)  # Draw the line on the plot
+  
+  legend("topleft", legend = "b)", inset= c(-0.2, -.01), bty = "n")
+  mtext(expression(lambda), side = 2, line = 0.3, at = 0.05, las = 2, cex = 0.5)
+
 }
+
 
 #calculates ncp in haploid case
 haploidncpcalculation <- function(d, a, samp.size, df, b, allele, x){
@@ -46,7 +101,8 @@ haploidncpcalculation <- function(d, a, samp.size, df, b, allele, x){
     
     ncpdata[match(t, inflationfactor)] <- ncp 
   }
-  plot(inflationfactor*(1/x), ncpdata, xlab = "Case Fraction", ylab = expression(lambda), type = "l", las = 1, bty = "n", pch =19, xlim = c(0, 1))
+  plot(inflationfactor*(1/x), ncpdata, xlab = "Case Fraction", ylab = "", type = "l", las = 1, bty = "n", pch =19, xlim = c(0, 1))
+  mtext(expression(lambda), side = 2, line = 3.5, las = 2)
 }
 
 #calculates ncp in diploid case
@@ -115,12 +171,12 @@ dominancefigure <- function(d, a, dominancelevels){
 
 riskvsprotectivefigure <- function(d, a, penetrance){
   allele <- 'risk'
-  par(mfrow = c(1, 2), mgp = c(3, 1, 0), mar = c(5.1, 4.1, 2.1, 2.1))
+ # par(mgp = c(3, 1, 0), mar = c(3, 3, 3, 3) , axes = TRUE)
   haploidncpcalculation(d, a, 10000, 1, penetrance, allele, 1/d)
-  legend("topleft", legend = "a)", inset= c(-0.38, -.1), bty = "n")
+  legend("topleft", legend = "c)", inset= c(-0.38, -.1), bty = "n")
   allele <- 'protective'
   haploidncpcalculation(d, a, 10000, 1, penetrance, allele, 1/d)
-  legend("topleft", legend = "b)", inset= c(-0.38, -.1), bty = "n")
+  legend("topleft", legend = "d)", inset= c(-0.38, -.1), bty = "n")
 }
 
 creatediploidpopulation <- function(d, a, b, h, analysis, pop.size = 1000000){
