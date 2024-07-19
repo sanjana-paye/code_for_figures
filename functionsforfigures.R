@@ -126,12 +126,12 @@ diploidncpcalculation <- function(d, a, b, h, samp.size, analysis, x, df = 2){
     
       ncpdata[match(t, inflationfactor)] <- ncp + (df/samp.size)
   }
-  plot(inflationfactor*(1/x), ncpdata,  xlab = "Case Fraction", ylab = expression(lambda), type = 'l', las = 1, bty = "n", pch =19, xlim = c(0, 1), ylim = c(0, max(ncpdata)*1.1))
-  
+  plot(inflationfactor*(1/x), ncpdata,  xlab = "Case Fraction", ylab = "", type = 'l', las = 1, bty = "n", pch =19, xlim = c(0, 1), ylim = c(0, max(ncpdata)*1.1))
+  mtext(expression(lambda), side = 2, line = 3.5, las = 2)
 } 
 
 #figure showing haploid and diploid cases at different penetrance levels (0.2, 0.5, 1)
-penetrancefigure <- function(d, a, penetrance_levels){
+haploidpenetrancefigure <- function(d, a, penetrance_levels){
   allele <- 'risk'
   par(mfrow = c(2,3), mgp = c(3.5, 1, 0), mar = c(5.1, 6, 2.1, 2.1), xpd=NA)
   haploidncpcalculation(d, a, 10000, 1, penetrance_levels[1], allele, x = (1/d))
