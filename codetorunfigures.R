@@ -1,6 +1,8 @@
 figure1(0.3, 0.1, 1, 1)
 
-penetrancefigure(0.3, 0.1, c(0.2, 0.5, 1))
+haploidpenetrancefigure(0.3, 0.1, c(0.2, 0.5, 1))
+
+diploidpenetrancefigure(0.3, 0.1, c(0.2, 0.5, 1))
 
 riskvsprotectivefigure(0.3, 0.1, 1)
 

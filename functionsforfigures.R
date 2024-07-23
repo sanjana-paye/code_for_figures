@@ -133,7 +133,7 @@ diploidncpcalculation <- function(d, a, b, h, samp.size, analysis, x, df = 2){
 #figure showing haploid and diploid cases at different penetrance levels (0.2, 0.5, 1)
 haploidpenetrancefigure <- function(d, a, penetrance_levels){
   allele <- 'risk'
-  par(mfrow = c(2,3), mgp = c(3.5, 1, 0), mar = c(5.1, 6, 2.1, 2.1), xpd=NA)
+  par(mfrow = c(1,3), mgp = c(3.5, 1, 0), mar = c(5.1, 6, 2.1, 2.1), xpd=NA)
   haploidncpcalculation(d, a, 10000, 1, penetrance_levels[1], allele, x = (1/d))
   legend("topleft", legend = "a)", inset= c(-0.7, -.2225), bty = "n")
   par(mar = c(5.1, 4.1, 2.1, 2.1))
@@ -141,8 +141,11 @@ haploidpenetrancefigure <- function(d, a, penetrance_levels){
   legend("topleft", legend = "b)", inset= c(-0.6, -.2), bty = "n")
   haploidncpcalculation(d, a, 10000, 1, penetrance_levels[3], "risk", 1/d)
   legend("topleft", legend = "c)", inset= c(-0.6, -.2), bty = "n")
+}
+
+diploidpenetrancefigure <- function(d, a, penetrance_levels){
   allele <- 'unknown'
-  par(mar = c(5.1, 6, 2.1, 2.1))
+  par(mfrow = c(1,3), mgp = c(3.5, 1, 0), mar = c(5.1, 6, 2.1, 2.1), xpd=NA)
   diploidncpcalculation(d, a, penetrance_levels[1], 0.5, 10000, allele, 1/d)
   legend("topleft", legend = "d)", inset= c(-0.7, -.2225), bty = "n")
   par(mar = c(5.1, 4.1, 2.1, 2.1))
