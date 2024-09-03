@@ -1,4 +1,5 @@
-figure1(0.3, 0.1, 1, 1)
+#figure1
+ncptraversals(0.3, 0.1, 1, 1)
 
 #figure2
 haploidpenetrancefigure(0.3, 0.1, c(0.2, 0.5, 1))

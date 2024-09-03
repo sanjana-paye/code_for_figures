@@ -1,4 +1,5 @@
-figure1 <- function(d, a, b, t){
+#combines surface and line plots into 4-panel figure
+ncptraversals <- function(d, a, b, t){
   par(mfrow = c(2, 2), mgp = c(1, 3, 10), mar = c(2, 2, 2, 2), cex.axis = 0.5, las = 1)
   ncpsurfaceplotfigure_risk(b, t)
   ncpsurfaceplotfigure_protective(b, t)
@@ -11,6 +12,7 @@ figure1 <- function(d, a, b, t){
   riskvsprotectivefigure(d, a, b)
 }
 
+#ncp surface plots and traversals
 ncpsurfaceplotfigure_risk <- function(b, t){
   #surface plot figure
  
@@ -82,8 +84,7 @@ ncpsurfaceplotfigure_protective <- function(b, t){
 
 }
 
-
-#calculates ncp in haploid case
+#ncp line plot in haploid case
 haploidncpcalculation <- function(d, a, samp.size, df, b, allele, x){
   inflationfactor <- seq(0, x, length.out = 1000)
   
@@ -105,7 +106,18 @@ haploidncpcalculation <- function(d, a, samp.size, df, b, allele, x){
   mtext(expression(lambda), side = 2, line = 3.5, las = 2)
 }
 
-#calculates ncp in diploid case
+#haploid case risk vs protective
+riskvsprotectivefigure <- function(d, a, penetrance){
+  allele <- 'risk'
+  # par(mgp = c(3, 1, 0), mar = c(3, 3, 3, 3) , axes = TRUE)
+  haploidncpcalculation(d, a, 10000, 1, penetrance, allele, 1/d)
+  legend("topleft", legend = "c)", inset= c(-0.38, -.1), bty = "n")
+  allele <- 'protective'
+  haploidncpcalculation(d, a, 10000, 1, penetrance, allele, 1/d)
+  legend("topleft", legend = "d)", inset= c(-0.38, -.1), bty = "n")
+}
+
+#ncp line plot in diploid case
 diploidncpcalculation <- function(d, a, b, h, samp.size, analysis, x, df = 2){
   inflationfactor <- seq(0.001, x, length.out = 1000)
   
@@ -130,7 +142,7 @@ diploidncpcalculation <- function(d, a, b, h, samp.size, analysis, x, df = 2){
   mtext(expression(lambda), side = 2, line = 3.5, las = 2)
 } 
 
-#figure showing haploid and diploid cases at different penetrance levels (0.2, 0.5, 1)
+#haploid case at different penetrance levels 
 haploidpenetrancefigure <- function(d, a, penetrance_levels){
   allele <- 'risk'
   par(mfrow = c(1,3), mgp = c(3.5, 1, 0), mar = c(5.1, 6, 2.1, 2.1), xpd=NA)
@@ -143,6 +155,7 @@ haploidpenetrancefigure <- function(d, a, penetrance_levels){
   legend("topleft", legend = "c)", inset= c(-0.6, -.2), bty = "n")
 }
 
+#diploid case at different penetrance levels 
 diploidpenetrancefigure <- function(d, a, penetrance_levels){
   allele <- 'unknown'
   par(mfrow = c(1,3), mgp = c(3.5, 1, 0), mar = c(5.1, 6, 2.1, 2.1), xpd=NA)
@@ -155,6 +168,7 @@ diploidpenetrancefigure <- function(d, a, penetrance_levels){
   legend("topleft", legend = "f)", inset= c(-0.6, -.2225), bty = "n")
 }
 
+#diploid case at different dominance levels at penetrances of 1 and 0.5
 dominancefigure <- function(d, a, dominancelevels){
   allele <- "unknown"
   par(mfrow = c(2,3), mgp = c(3, 1, 0), mar = c(5.1, 6, 2.1, 2.1), xpd=NA, las = 2)
@@ -172,6 +186,7 @@ dominancefigure <- function(d, a, dominancelevels){
   legend("topleft", legend = "f)", inset= c(-0.7, -.2), bty = "n")
 }
 
+#diploid case at different dominance levels at penetrances of 1 and 0.5 w simulations
 dominancefigure.simulation <- function(d, a, dominancelevels){
   allele <- "unknown"
   par(mfrow = c(2,3), mgp = c(3, 1, 0), mar = c(5.1, 6, 2.1, 1.5), xpd=NA, las = 2)
@@ -190,16 +205,7 @@ dominancefigure.simulation <- function(d, a, dominancelevels){
 }
 
 
-riskvsprotectivefigure <- function(d, a, penetrance){
-  allele <- 'risk'
- # par(mgp = c(3, 1, 0), mar = c(3, 3, 3, 3) , axes = TRUE)
-  haploidncpcalculation(d, a, 10000, 1, penetrance, allele, 1/d)
-  legend("topleft", legend = "c)", inset= c(-0.38, -.1), bty = "n")
-  allele <- 'protective'
-  haploidncpcalculation(d, a, 10000, 1, penetrance, allele, 1/d)
-  legend("topleft", legend = "d)", inset= c(-0.38, -.1), bty = "n")
-}
-
+#creates diploid population to use in simulations
 creatediploidpopulation <- function(d, a, b, h, analysis, pop.size = 1000000){
   
   pop.genotypes <- rbinom(pop.size, 2, a)
@@ -235,6 +241,7 @@ creatediploidpopulation <- function(d, a, b, h, analysis, pop.size = 1000000){
   return(pop)
 }
 
+#calculates power in diploid case
 powercalculation <- function(d, a, samp.size, analysis, alpha, df, b, h, x){
   
   inflation <- seq(0.0001, x, length.out = 1000)
@@ -271,6 +278,7 @@ powercalculation <- function(d, a, samp.size, analysis, alpha, df, b, h, x){
   
 }
 
+#simulation for ncp power
 ncppowersimulation <- function(d, a, b, h, samp.size, analysis, 
                                inflation = c(0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3),
                                n.sim = 1000, pop.size = 1000000, alpha = 0.00000005, df = 2){
@@ -339,6 +347,9 @@ ncppowersimulation <- function(d, a, b, h, samp.size, analysis,
   powercalculation(d, a, samp.size, analysis, alpha, df, b, h, max(inflation))
 }
 
+#nine panel ncp power figure - penetrance varies down columns (1, 0.6, 0.4)
+#dominance varies across rows (0.1, 0.5, 0.9)
+
 ncppowersimfigure <- function(d, a){
   allele <- "unknown"
   par(mfrow = c(3,3), mgp = c(2.5,0.5,0),  mar = c(4.1, 4.1, 1.2, 2.1),  cex.axis = 1, xpd=TRUE)
@@ -363,7 +374,7 @@ ncppowersimfigure <- function(d, a){
   
 }
 
-
+#armitage trend simulation function and figure - 
 armitagepowersimulation <- function(d, a, b, h, samp.size, analysis = 'unknown', 
                                     inflation = c(0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3), n.sim = 200, 
                                     pop.size = 1000000, alpha = 0.00000005, df = 2){
@@ -437,6 +448,7 @@ armitagetrendfigure <- function(d, a){
 }
 
 
+#logistic regression simulation function and figure
 logisticpowersimulation <- function(d, a, b, h, samp.size, analysis = 'unknown', inflation = 
                                       c(0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3), n.sim = 200, pop.size = 1000000, alpha = 0.00000005, df = 2){
   #creates population
