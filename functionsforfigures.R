@@ -172,6 +172,24 @@ dominancefigure <- function(d, a, dominancelevels){
   legend("topleft", legend = "f)", inset= c(-0.7, -.2), bty = "n")
 }
 
+dominancefigure.simulation <- function(d, a, dominancelevels){
+  allele <- "unknown"
+  par(mfrow = c(2,3), mgp = c(3, 1, 0), mar = c(5.1, 6, 2.1, 1.5), xpd=NA, las = 2)
+  diploidncpsimulation(d, a, 1, dominancelevels[1], 100000, 1/d, "unknown")
+  legend("topleft", legend = "a)", inset= c(-0.7, -.2), bty = "n")
+  diploidncpsimulation(d, a, 1, dominancelevels[2], 100000, 1/d, "unknown")
+  legend("topleft", legend = "b)", inset= c(-0.7, -.2), bty = "n")
+  diploidncpsimulation(d, a, 1, dominancelevels[3], 100000, 1/d, "unknown")
+  legend("topleft", legend = "c)", inset= c(-0.7, -.2), bty = "n")
+  diploidncpsimulation(d, a, 0.5, dominancelevels[1], 100000, 1/d, "unknown")
+  legend("topleft", legend = "d)", inset= c(-0.7, -.2), bty = "n")
+  diploidncpsimulation(d, a, 0.5, dominancelevels[2], 100000, 1/d, "unknown")
+  legend("topleft", legend = "e)", inset= c(-0.7, -.2), bty = "n")
+  diploidncpsimulation(d, a, 0.5, dominancelevels[3], 100000, 1/d, "unknown")
+  legend("topleft", legend = "f)", inset= c(-0.7, -.2), bty = "n")
+}
+
+
 riskvsprotectivefigure <- function(d, a, penetrance){
   allele <- 'risk'
  # par(mgp = c(3, 1, 0), mar = c(3, 3, 3, 3) , axes = TRUE)
